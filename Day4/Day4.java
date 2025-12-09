@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -45,13 +44,8 @@ public class Day4 {
         }
     }
 
-    private void part1() {
-        this.data = readData(fileName, false);
-        this.gridHeight = data.size();
-        this.gridWidth = data.get(0).length;
-
+    private int getAvailableRolls() {
         int availableRolls = 0;
-
         for (int row=0; row<gridHeight; row++) {
             for (int col=0; col<gridWidth; col++){
                 int surroundingRolls = 0;
@@ -89,13 +83,61 @@ public class Day4 {
                 }
             }
         }
+        return availableRolls;
+    }
+
+    private void part1() {
+        this.data = readData(fileName, false);
+        this.gridHeight = data.size();
+        this.gridWidth = data.get(0).length;
+
+        int availableRolls = getAvailableRolls();
+
         System.out.println("Part 1: " + availableRolls);
+    }
+
+    private boolean removeAvailableRolls() {
+        boolean isUpdating = false;
+         for (int row=0; row<gridHeight; row++) {
+            for (int col=0; col<gridWidth; col++){
+                if (data.get(row)[col] == 'X') {
+                    data.get(row)[col] = 'O';
+                    isUpdating = true;
+                }
+            }
+        }
+        return isUpdating;
+    }
+
+    private int countRemovedRolls() {
+        int removedRolls = 0;
+        for (int row=0; row<gridHeight; row++) {
+            for (int col=0; col<gridWidth; col++){
+                if (data.get(row)[col] == 'O') {
+                    removedRolls ++;
+                }
+            }
+        }
+        return removedRolls;
+    }
+
+    private void part2() {
+        boolean isUpdating = false;
+        do {
+            getAvailableRolls();
+            isUpdating = removeAvailableRolls();
+        } while (isUpdating);
+
+        int removedRolls = countRemovedRolls();
+
+        System.out.println("Part 2: " + removedRolls);
     }
 
     public static void main(String[] args) {
         Day4 day4 = new Day4();
 
         day4.part1();
+        day4.part2();
     }
 
 }
